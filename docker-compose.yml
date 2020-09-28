@@ -1,0 +1,110 @@
+version: '3.7'
+
+services:
+  shopware5_6:
+    image: shpwr5-fleet/shopware5_6
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./5.6/code:/var/www/html/shopware5_6"
+    build:
+      context: ./5.6
+    depends_on:
+      - db_shopware5_6
+  shopware5_5:
+    image: shpwr5-fleet/shopware5_5
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./5.5/code:/var/www/html/shopware5_5"
+    build:
+      context: ./5.5
+    depends_on:
+      - db_shopware5_5
+  shopware5_4:
+    image: shpwr5-fleet/shopware5_4
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./5.4/code:/var/www/html/shopware5_4"
+    build:
+      context: ./5.4
+    depends_on:
+      - db_shopware5_4
+  shopware5_3:
+    image: shpwr5-fleet/shopware5_3
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./5.3/code:/var/www/html/shopware5_3"
+    build:
+      context: ./5.3
+    depends_on:
+      - db_shopware5_3
+  router:
+    image: shpwr5-fleet/router
+    restart: always
+    ports:
+      - 80:80
+    build:
+      context: ./router
+    depends_on:
+      - shopware5_6
+      - shopware5_5
+      - shopware5_4
+      - shopware5_3
+  adminer:
+    image: adminer
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - 8081:8080
+    depends_on:
+      - db_shopware5_6
+  db_shopware5_6:
+    image: mysql:5.7
+    volumes:
+      - ./.mysql-data-shopware5_6/db:/var/lib/mysql
+    restart: always
+    command: --max_allowed_packet=32505856 --sql_mode=""
+    environment:
+      - TZ=Europe/Berlin
+    env_file:
+      - .env-shopware5_6
+  db_shopware5_5:
+    image: mysql:5.7
+    volumes:
+      - ./.mysql-data-shopware5_5/db:/var/lib/mysql
+    restart: always
+    command: --max_allowed_packet=32505856 --sql_mode=""
+    environment:
+      - TZ=Europe/Berlin
+    env_file:
+      - .env-shopware5_5
+  db_shopware5_4:
+    image: mysql:5.7
+    volumes:
+      - ./.mysql-data-shopware5_4/db:/var/lib/mysql
+    restart: always
+    command: --max_allowed_packet=32505856 --sql_mode=""
+    environment:
+      - TZ=Europe/Berlin
+    env_file:
+      - .env-shopware5_4
+  db_shopware5_3:
+    image: mysql:5.7
+    volumes:
+      - ./.mysql-data-shopware5_3/db:/var/lib/mysql
+    restart: always
+    command: --max_allowed_packet=32505856 --sql_mode=""
+    environment:
+      - TZ=Europe/Berlin
+    env_file:
+      - .env-shopware5_3
+
